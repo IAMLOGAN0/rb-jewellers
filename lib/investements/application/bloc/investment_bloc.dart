@@ -135,16 +135,22 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
           responseFailureOrSuccessOption: none(),
         ),
       );
-      // Print all values of the EasyGoldSavingsPlan for debugging
+      final now = DateTime.now();
+      final startDate = now;
+      final nextInstallmentDate = getGoldenAssuranceNextInstallmentDate(
+        startDate: startDate,
+        nextInstallmentNumber: 1,
+      );
+      int endAnchorDay = now.day > 28 ? 28 : now.day;
+      final endDate = DateTime(now.year, now.month + 11, endAnchorDay);
+
       final plan = state.easyGoldSavingsPlan.copyWith(
         balanceAmount: state.easyGoldSavingsPlan.amount -
             (state.easyGoldSavingsPlan.amount / 12),
-        startDate: DateTime.now(),
-        endDate: DateTime(
-            DateTime.now().year, DateTime.now().month + 11, DateTime.now().day),
-        createdAt: DateTime.now(),
-        nextInstallmentDate: DateTime(
-            DateTime.now().year, DateTime.now().month + 1, DateTime.now().day),
+        startDate: startDate,
+        endDate: endDate,
+        createdAt: now,
+        nextInstallmentDate: nextInstallmentDate,
         status: 'Active',
       );
 
@@ -478,17 +484,20 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
 
       DateTime? nextInstallmentDate;
       String? status;
-      if (DateTime.now()
-          .isAfter(plan.nextInstallmentDate!.add(const Duration(days: 5)))) {
+      if (plan.nextInstallmentDate != null &&
+          DateTime.now()
+              .isAfter(plan.nextInstallmentDate!.add(const Duration(days: 5)))) {
         nextInstallmentDate = null;
         status = 'Closed';
-      } else if (plan.noOfInstallmentsPaid == 11) {
+      } else if (plan.noOfInstallmentsPaid >= 11) {
         nextInstallmentDate = null;
         status = 'Completed';
       } else {
         status = 'Active';
-        nextInstallmentDate = DateTime(
-            DateTime.now().year, DateTime.now().month + 1, DateTime.now().day);
+        nextInstallmentDate = getGoldenAssuranceNextInstallmentDate(
+          startDate: plan.startDate,
+          nextInstallmentNumber: plan.noOfInstallmentsPaid + 1,
+        );
       }
 
       /// create plan first, then payment, if payment success make plan status to active
@@ -526,14 +535,22 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
         if (paymentStatus.success ?? false) {
           AppDialogs.setLoadingDialog();
 
+          int prevInstallmentPaying = 0;
+          int prevNoOfInstallment = 0;
+          if (plan.transactionHistory.isNotEmpty) {
+            prevInstallmentPaying =
+                (plan.transactionHistory.last.installmentPaying ?? 0).toInt();
+            prevNoOfInstallment =
+                (plan.transactionHistory.last.noOfInstallment ?? 0).toInt();
+          }
+
           /// **Update Transaction History on Success**
           currentTransactionHistory.add(TransactionHistory(
             transactionDate: DateTime.now(),
             amount: plan.amount / 12,
             balanceAmount: plan.balanceAmount - (plan.amount / 12),
             totalAmount: plan.amount,
-            installmentPaying:
-                plan.transactionHistory.last.installmentPaying ?? 0 + 1,
+            installmentPaying: prevInstallmentPaying + 1,
             transactionId: paymentStatus.paymentId!,
             paymentMethod: paymentStatus.paymentMethod ?? 'Unknown',
             transactionType: paymentStatus.transactionType ?? 'Unknown',
@@ -542,8 +559,7 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
             userId: AppUser.uniqueId.getOrCrash(),
             planId: plan.id,
             goldPrice: null,
-            noOfInstallment:
-                plan.transactionHistory.last.noOfInstallment ?? 0 + 1,
+            noOfInstallment: prevNoOfInstallment + 1,
             qty: null,
           ));
 
@@ -1431,5 +1447,28 @@ Future<String> createOrderInRazorpay(int amount1) async {
     print('exception 123>> $e');
     return 'error';
   }
+}
+
+/// Calculates the next installment date for Golden Assurance according to business rules:
+/// - Anchored strictly to [startDate.day].
+/// - Rule 13: If opened on the 29th, 30th, or 31st, clamped to 28th of every month.
+/// - Clamps day to the last valid day of the target month (e.g. Feb 28/29, Apr 30).
+DateTime getGoldenAssuranceNextInstallmentDate({
+  required DateTime startDate,
+  required int nextInstallmentNumber,
+}) {
+  int anchorDay = startDate.day;
+  if (anchorDay > 28) {
+    anchorDay = 28;
+  }
+
+  int totalMonths = startDate.month + nextInstallmentNumber;
+  int targetYear = startDate.year + ((totalMonths - 1) ~/ 12);
+  int targetMonth = ((totalMonths - 1) % 12) + 1;
+
+  int maxDaysInMonth = DateTime(targetYear, targetMonth + 1, 0).day;
+  int clampedDay = anchorDay > maxDaysInMonth ? maxDaysInMonth : anchorDay;
+
+  return DateTime(targetYear, targetMonth, clampedDay);
 }
 

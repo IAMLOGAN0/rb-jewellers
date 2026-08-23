@@ -31,10 +31,12 @@ class _EasyGoldSavingsPlanCardState extends State<EasyGoldSavingsPlanCard> {
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
     DateTime todayDateOnly = DateTime(now.year, now.month, now.day);
-    DateTime targetDate = widget.myInvestment.nextInstallmentDate!;
-    DateTime endDate =
-        DateTime(targetDate.year, targetDate.month, targetDate.day);
-    DateTime startDate = endDate.subtract(const Duration(days: 4));
+    DateTime? targetDate = widget.myInvestment.nextInstallmentDate;
+    DateTime? endDate = targetDate != null
+        ? DateTime(targetDate.year, targetDate.month, targetDate.day)
+        : null;
+    DateTime? startDate =
+        endDate != null ? endDate.subtract(const Duration(days: 4)) : null;
 
     return Container(
       width: double.infinity,
@@ -178,7 +180,9 @@ class _EasyGoldSavingsPlanCardState extends State<EasyGoldSavingsPlanCard> {
               ],
             ),
           ),
-          if (widget.myInvestment.nextInstallmentDate != null)
+          if (widget.myInvestment.nextInstallmentDate != null &&
+              startDate != null &&
+              endDate != null)
             if (widget.myInvestment.status != 'Completed' &&
                 widget.myInvestment.status != 'Closed' &&
                 (todayDateOnly.compareTo(startDate) >= 0 &&

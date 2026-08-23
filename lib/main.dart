@@ -146,7 +146,13 @@ class _RBJewellersState extends State<RBJewellers> {
                 transform: Matrix4.diagonal3Values(1, 1, devicePixelRatio),
                 child: ConnectionNotifier(
                   child: UpgradeAlert(
-                    upgrader: Upgrader(),
+                    showIgnore: false,
+                    showLater: false,
+                    barrierDismissible: false,
+                    shouldPopScope: () => false,
+                    upgrader: Upgrader(
+                      durationUntilAlertAgain: Duration.zero,
+                    ),
                     child: child!,
                   ),
                 ),
