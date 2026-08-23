@@ -1,0 +1,74 @@
+plugins {
+    id "com.android.application"
+    id "org.jetbrains.kotlin.android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
+}
+
+android {
+    namespace = "com.binseq.rbjewellers.customers"
+    compileSdk = 36
+    ndkVersion = "27.0.12077973"
+
+    defaultConfig {
+        applicationId = "com.binseq.rbjewellers.customers"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+        multiDexEnabled = true
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("C:/Users/aksha/Downloads/clone/rb/android/keystore.jks")
+            storePassword "rbjewellers"
+            keyAlias "rbjewellers"
+            keyPassword "rbjewellers"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = true
+            shrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.release
+        }
+        debug {
+            // Use default debug signing
+        }
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("androidx.multidex:multidex:2.0.1")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity:17.1.1")
+    implementation("com.google.firebase:firebase-appcheck-debug:17.1.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+}

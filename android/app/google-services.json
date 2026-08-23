@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "932606818423",
+    "project_id": "rb-jewellers-f3c37",
+    "storage_bucket": "rb-jewellers-f3c37.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932606818423:android:6cc2ca322e1f9a56166e72",
+        "android_client_info": {
+          "package_name": "com.binseq.rbjewellers.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD06FCIStXEefc8qZApmLv0uv53bmFDdFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932606818423:android:49e88b0ac5e9f872166e72",
+        "android_client_info": {
+          "package_name": "com.binseq.rbjewellers.customers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD06FCIStXEefc8qZApmLv0uv53bmFDdFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

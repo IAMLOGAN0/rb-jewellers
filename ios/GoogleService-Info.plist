@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>932606818423-6vujos866r4f9afpcu6d879blu32pr6r.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.932606818423-6vujos866r4f9afpcu6d879blu32pr6r</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>932606818423-1q15dfdsbp73snefou0kqds8ebdok8g5.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD7UDnjoOXOQO_-nwKVK21tz7fUtle6EGI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>932606818423</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.binseq.rbjewellers.customer</string>
+	<key>PROJECT_ID</key>
+	<string>rb-jewellers-f3c37</string>
+	<key>STORAGE_BUCKET</key>
+	<string>rb-jewellers-f3c37.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:932606818423:ios:b01ac746ae708c28166e72</string>
+</dict>
+</plist>
