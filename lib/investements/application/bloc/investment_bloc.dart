@@ -249,11 +249,13 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
                       print('plan.id ${plan.id}');
                       print('newPlanId ${newPlanId}');
                       paymentMode = 'Offline';
+                      final double emiAmount =
+                          double.parse((plan.amount / 12).toStringAsFixed(2));
                       add(
                         InvestmentEvent.payOnStore(PayOffline(
                           id: '',
                           planName: 'Golden Assurance',
-                          amount: (plan.amount / 12).toDouble(),
+                          amount: emiAmount,
                           planId: newPlanId,
                           userId: AppUser.uniqueId.getOrCrash(),
                           createdAt: DateTime.now().toIso8601String(),
@@ -285,19 +287,6 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
                           .collection('admin_notification')
                           .add(
                               notificationData); // or .doc(pushKey).set(notificationData)
-
-                      final notificationData1 = {
-                        'read': false,
-                        'time_stamp': FieldValue.serverTimestamp(),
-                        'title':
-                            'Pay at counter request made for Rs.${(plan.amount / 12).toInt()}',
-                        'description':
-                            'Pay at counter request made for Rs.${(plan.amount / 12).toInt()}, Scheme Type: Golden Assurance, Plan ID- ${newPlanId}',
-                      };
-
-                      await FirebaseFirestore.instance
-                          .collection('admin_notification')
-                          .add(notificationData1);
 
                       toastMessage(
                           'Please visit the store to make the payment.');
@@ -385,9 +374,9 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
           final notificationData1 = {
             'read': false,
             'time_stamp': FieldValue.serverTimestamp(),
-            'title': 'Online Payment made for Rs.${(plan.amount / 12).toInt()}',
+            'title': 'Online Payment made for Rs.${(plan.amount / 12).toStringAsFixed(2)}',
             'description':
-                'Online Payment made for Rs.${(plan.amount / 12).toInt()}, Scheme Type: Golden Assurance, Plan ID- ${newPlanId}',
+                'Online Payment made for Rs.${(plan.amount / 12).toStringAsFixed(2)}, Scheme Type: Golden Assurance, Plan ID- ${newPlanId}',
           };
 
           await FirebaseFirestore.instance
@@ -579,9 +568,9 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
           final notificationData = {
             'read': false,
             'time_stamp': FieldValue.serverTimestamp(),
-            'title': 'Online Payment made for Rs.${plan.amount / 12}',
+            'title': 'Online Payment made for Rs.${(plan.amount / 12).toStringAsFixed(2)}',
             'description':
-                'Online Payment made for Rs.${plan.amount / 12}, Scheme Type: Golden Assurance , Plan ID- ${plan.id}',
+                'Online Payment made for Rs.${(plan.amount / 12).toStringAsFixed(2)}, Scheme Type: Golden Assurance , Plan ID- ${plan.id}',
           };
 
           await FirebaseFirestore.instance
@@ -733,11 +722,13 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
                       }
                       paymentMode1 = 'Offline';
                       print('paymentMode1 in check $paymentMode1');
+                      final double offlineAmount =
+                          double.parse((plan.amountPaid).toStringAsFixed(2));
                       add(
                         InvestmentEvent.payOnStore(PayOffline(
                           id: '',
                           planName: 'Golden Future ',
-                          amount: (plan.amountPaid).toDouble(),
+                          amount: offlineAmount,
                           planId: newPlanId,
                           userId: AppUser.uniqueId.getOrCrash(),
                           createdAt: DateTime.now().toIso8601String(),
@@ -771,18 +762,6 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
                       toastMessage(
                           'Please visit the store to make the payment.');
 
-                      final notificationData1 = {
-                        'read': false,
-                        'time_stamp': FieldValue.serverTimestamp(),
-                        'title':
-                            'Pay at counter request made for Rs.${(plan.amountPaid).toDouble()}',
-                        'description':
-                            'Pay at counter request made for Rs.${(plan.amountPaid).toDouble()}, Scheme Type: Golden Future , Plan ID- ${newPlanId}',
-                      };
-
-                      await FirebaseFirestore.instance
-                          .collection('admin_notification')
-                          .add(notificationData1);
                       Get.back(result: {
                         'paymentMode': 'Offline',
                       });
@@ -870,9 +849,9 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
           final notificationData1 = {
             'read': false,
             'time_stamp': FieldValue.serverTimestamp(),
-            'title': 'Online Payment made for Rs.${(plan.amountPaid).toInt()}',
+            'title': 'Online Payment made for Rs.${(plan.amountPaid).toStringAsFixed(2)}',
             'description':
-                'Online Payment made for Rs.${(plan.amountPaid).toInt()}, Scheme Type: Golden Future , Plan ID- ${newPlanId}',
+                'Online Payment made for Rs.${(plan.amountPaid).toStringAsFixed(2)}, Scheme Type: Golden Future , Plan ID- ${newPlanId}',
           };
 
           await FirebaseFirestore.instance
@@ -1061,12 +1040,14 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
         failureOrSuccess = await investmentRepository
             .updateTransactionHistoryForFutureGoldSavingsPlans(updatedPalnData);
 
+        final String formattedAmount =
+            double.tryParse(event.amount)?.toStringAsFixed(2) ?? event.amount;
         final notificationData = {
           'read': false,
           'time_stamp': FieldValue.serverTimestamp(),
-          'title': 'Online Payment made for Rs.${event.amount}',
+          'title': 'Online Payment made for Rs.$formattedAmount',
           'description':
-              'Online Payment made for Rs.${event.amount}, Scheme Type: Golden Future , Plan ID- ${plan.id}',
+              'Online Payment made for Rs.$formattedAmount, Scheme Type: Golden Future , Plan ID- ${plan.id}',
         };
 
         await FirebaseFirestore.instance
@@ -1281,12 +1262,14 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
         failureOrSuccess = await investmentRepository
             .updateTransactionHistoryForGoldenSecure(updatedPalnData);
 
+        final String formattedAmount =
+            double.tryParse(event.amount)?.toStringAsFixed(2) ?? event.amount;
         final notificationData = {
           'read': false,
           'time_stamp': FieldValue.serverTimestamp(),
-          'title': 'Online Payment made for Rs.${event.amount}',
+          'title': 'Online Payment made for Rs.$formattedAmount',
           'description':
-              'Online Payment made for Rs.${event.amount}, Scheme Type: Golden Secure , Plan ID- ${plan.id}',
+              'Online Payment made for Rs.$formattedAmount, Scheme Type: Golden Secure , Plan ID- ${plan.id}',
         };
 
         await FirebaseFirestore.instance
@@ -1364,14 +1347,19 @@ class InvestmentBloc extends Bloc<InvestmentEvent, InvestmentState> {
 /////
 //////
     on<_PayOnStore>((event, emit) async {
-      await investmentRepository.payOffline(event.data);
+      final double cleanAmount =
+          double.parse(event.data.amount.toStringAsFixed(2));
+      final cleanData = event.data.copyWith(amount: cleanAmount);
+      await investmentRepository.payOffline(cleanData);
+
+      final String formattedAmount = cleanAmount.toStringAsFixed(2);
 
       final notificationData = {
         'read': false,
         'time_stamp': FieldValue.serverTimestamp(),
-        'title': 'Pay at counter request made for Rs.${event.data.amount}',
+        'title': 'Pay at counter request made for Rs.$formattedAmount',
         'description':
-            'Pay at counter request made for Rs.${event.data.amount}, Scheme Type: ${event.data.planName}, Plan ID- ${event.data.planId}',
+            'Pay at counter request made for Rs.$formattedAmount, Scheme Type: ${event.data.planName}, Plan ID- ${event.data.planId}',
       };
 
       await FirebaseFirestore.instance

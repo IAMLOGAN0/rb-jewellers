@@ -211,7 +211,7 @@ class _EasyGoldSavingsPlanCardState extends State<EasyGoldSavingsPlanCard> {
                                 InvestmentEvent.payOnStore(PayOffline(
                                   id: '',
                                   planName: 'Easy Gold Savings Plan',
-                                  amount: widget.myInvestment.amount / 12,
+                                  amount: double.parse((widget.myInvestment.amount / 12).toStringAsFixed(2)),
                                   planId: widget.myInvestment.planId,
                                   userId: AppUser.uniqueId.getOrCrash(),
                                   createdAt: DateTime.now().toIso8601String(),
